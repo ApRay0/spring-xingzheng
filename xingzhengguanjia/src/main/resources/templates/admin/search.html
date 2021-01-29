@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>任务展示</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/dashboard.css" rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+<nav th:replace = "_fragments :: menu" class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Profile</a></li>
+                <li><a href="#">Help</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace = "admin/_fragments :: sidebar(1)" class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li class="active"><a href="#">Overview <span class="sr-only"></span></a></li>
+                <li><a href="#">Reports</a></li>
+                <li><a href="#">Analytics</a></li>
+                <li><a href="#">Export</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-2 main">
+            <div class = "alert-info alert-dismissable" th:unless="${#strings.isEmpty(message)}">
+                <div class="header">提示:</div>
+                <p th:text="${message}"></p>
+            </div>
+            <div class = "alert-danger alert-dismissable" th:unless="${#strings.isEmpty(fail)}">
+                <div class="header">提示:</div>
+                <p th:text="${fail}"></p>
+            </div>
+            <h2 class="sub-header">用户信息</h2>
+            <form class="form-inline" name="search" th:action="@{/admin/search}" action="#" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="query" placeholder="Search..." >
+                    <button class="btn" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                </div>
+            </form>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>用户邮箱</th>
+                        <th>用户名称</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user, iterStat: ${page.content}">
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.name}"></td>
+                        <td>
+                            <a href="#" th:href="@{/admin/user/add_role_team/{id}(id=${user.id})}" class="btn btn-success">更改</a>
+                            <a href="#" th:href="@{/admin/user/delete/{id}(id=${user.id})}" class="btn btn-danger ">删除</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <a th:href="@{/admin/user/input}" class="btn btn-success">新建</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="pager">
+                    <li><a th:href="@{/admin/user(page=${page.number} - 1)}" class="item" th:unless="${page.first}">上一页</a></li>
+                    <li><a th:href="@{/admin/user(page=${page.number} + 1)}" class="item" th:unless="${page.last}">下一页</a></li>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="_fragments :: script">
+</th:block>
+</body>
+
+</html>

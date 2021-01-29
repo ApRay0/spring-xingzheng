@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>任务展示</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/dashboard.css" rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+
+<body>
+    <nav th:replace = "_fragments :: menu" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Project name</a>
+            </div>
+        </div>
+    </nav>
+
+        <div class="container-fluid">
+
+            <div class="row">
+                <div th:replace = "_fragments :: sidebar(0)" class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+                        <li><a href="#">Reports</a></li>
+                        <li><a href="#">Analytics</a></li>
+                        <li><a href="#">Export</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <div class = "alert-info alert-dismissable" th:unless="${#strings.isEmpty(message)}">
+                        <div class="header">提示:</div>
+                        <p th:text="${message}"></p>
+                    </div>
+                    <div class = "alert-danger alert-dismissable" th:unless="${#strings.isEmpty(fail)}">
+                        <div class="header">提示:</div>
+                        <p th:text="${fail}"></p>
+                    </div>
+
+
+
+                    <h2 class="sub-header">任务清单</h2>
+
+
+
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>任务名称</th>
+                                <th>创建时间</th>
+                                <th>截止时间</th>
+                                <th>内容</th>
+                                <th>文件</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="task, iterStat: ${page.content}" th:style="${task.finished} == 1? 'color:red' : 'color:green'">
+
+
+                                <td th:text="${task.name}"></td>
+                                <td th:text="${task.create_time}"></td>
+                                <td th:text="${task.end_time}"></td>
+                                <td th:text="${task.content}"></td>
+
+                                <td width="25">
+                                    <form name="upload" th:action="@{/task/upload/{id}(id=${task.id})}" method="post" class="form-inline" enctype="multipart/form-data" >
+                                        <div class="form-group">
+                                            <input type="file" name="file">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="submit" value="提交">
+                                        </div>
+                                    </form>
+                                </td>
+
+                                <td>
+                                    <a href="#" th:href="@{/task/download/{id}(id=${task.id})}" class="btn btn-info">下载</a>
+                                    <a href="#" th:href="@{/mail/input/{id}(id=${task.id})}" class="btn btn-success">提醒</a>
+                                    <a href="#" th:href="@{/task/input/{id}(id=${task.id})}" class="btn btn-success">编辑</a>
+                                    <a herf="#" th:href="@{/task/delete/{id}(id=${task.id})}" class="btn btn-danger ">删除</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="5">
+                                        <div class="pager">
+                                            <li><a th:href="@{/task(page=${page.number} - 1)}" class="item" th:unless="${page.first}">上一页</a></li>
+                                            <li><a th:href="@{/task(page=${page.number} + 1)}" class="item" th:unless="${page.last}">下一页</a></li>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <a th:href="@{/task/input}" class="btn btn-success">新建</a>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <th:block th:replace="_fragments :: script">
+    </th:block>
+</body>
+
+</html>
